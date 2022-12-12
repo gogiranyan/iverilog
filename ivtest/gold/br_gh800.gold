@@ -1,0 +1,9 @@
+1. 'A' len=3 hex=410042
+2. 'A
+B' len=4 hex=410d0a42
+3. 'A
+B' len=4 hex=410d0a42
+4. 'AxyB' len=4 hex=41787942
+5. 'A
+
+B' len=5 hex=410d0a0a42
