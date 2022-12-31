@@ -94,8 +94,8 @@ def run_CE(options : dict) -> list:
         else:
             return [0, "Passed - CE"]
 
-    
-def run_normal(options : dict) -> list:
+
+def do_run_normal(options : dict, expected_fail : bool) -> list:
     '''Run the iverilog and vvp commands.
 
     In this case, run the compiler to generate a vvp output file, and
@@ -136,10 +136,16 @@ def run_normal(options : dict) -> list:
         with open(os.path.join("gold", it_gold), 'r') as gold_fd:
             stdout_gold = gold_fd.read()
 
-        if it_stdout == stdout_gold:
-            return [0, "Passed"]
+        if expected_fail:
+            if it_stdout == stdout_gold:
+                return [1, "Failed - Passed, but expected failure"]
+            else:
+                return [0, "Passed - Expected fail"]
         else:
-            return [1, "Failed - Gold output doesn't match stdout."]
+            if it_stdout == stdout_gold:
+                return [0, "Passed"]
+            else:
+                return [1, "Failed - Gold output doesn't match stdout."]
 
     # If there is a diff description, then compare name files instead of
     # the stdout and a gold file.
@@ -158,14 +164,35 @@ def run_normal(options : dict) -> list:
                 fd.readline()
             diff_data2 = fd.read()
 
-        if diff_data1 == diff_data2:
-            return [0, "Passed"]
+        if expected_fail:
+            if diff_data1 == diff_data2:
+                return [1, "Failed - Passed, but expected failure"]
+            else:
+                return [0, "Passed"]
         else:
-            return [1, f"Failed - Files {diff_name1} and {diff_name2} differ."]
+            if diff_data1 == diff_data2:
+                return [0, "Passed"]
+            else:
+                return [1, f"Failed - Files {diff_name1} and {diff_name2} differ."]
 
     # Otherwise, look for the PASSED output string in stdout.
     for line in it_stdout.splitlines():
         if line == "PASSED":
-            return [0, "Passed"]
-    
-    return [1, "Failed - No PASSED output, and no gold file"]
+            if expected_fail:
+                return [1, "Failed - Passed, but expected failure"]
+            else:
+                return [0, "Passed"]
+
+    # If there is no PASSED output, and nothing else to check, then
+    # assume a failure.
+    if expected_fail:
+        return [0, "Passed"]
+    else:
+        return [1, "Failed - No PASSED output, and no gold file"]
+
+
+def run_normal(options : dict) -> list:
+    return do_run_normal(options, False)
+
+def run_EF(options : dict) -> list:
+    return do_run_normal(options, True)

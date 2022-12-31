@@ -73,6 +73,9 @@ def process_test(item: list) -> str:
     elif it_type == "CE":
         res = run_ivl.run_CE(it_options)
 
+    elif it_type == "EF":
+        res = run_ivl.run_EF(it_options)
+
     else:
         res = f"{it_key}: I don't understand the test type ({it_type})."
         raise Exception(res)
