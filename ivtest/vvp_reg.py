@@ -31,7 +31,7 @@ def process_test(item: list) -> str:
     #    normal,arg1,arg2,...
     # Convert this into the type and an it_args list.
     it_type = item[1].split(',')
-    it_args = it_type[1:len(it_type)]
+    it_args = it_type[1:]
     it_type = it_type[0]
 
     # The extra field (4th item in the list) is of one of these forms:

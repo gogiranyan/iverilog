@@ -8,6 +8,7 @@ import re
 
 def assemble_iverilog_cmd(key: str, it_dir: str, args: list) -> list:
     res = ["iverilog", "-o", os.path.join("work", "a.out")]
+    res += ["-D__ICARUS_UNSIZED__"]
     res += args
     src = os.path.join(it_dir, key + '.v')
     res += [src]
@@ -73,7 +74,7 @@ def run_CE(options : dict) -> list:
     ''' Run the compiler, and expect an error
 
     In this case, we assert that the command fails to run and reports
-    an error. This is to check that invalid iput generates errors.'''
+    an error. This is to check that invalid input generates errors.'''
 
     it_key = options['key']
     it_dir = options['directory']
