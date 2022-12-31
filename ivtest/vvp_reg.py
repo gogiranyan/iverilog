@@ -83,18 +83,6 @@ def process_test(item: list) -> str:
     return res
 
 
-def report_results(results: list) -> None:
-    width = 0
-    for item in results:
-        if len(item[0]) > width:
-            width = len(item[0])
-
-    for item in results:
-        key = item[0]
-        value = item[1]
-        print(f"{key:>{width}}: {value}")
-
-
 if __name__ == "__main__":
     args = docopt(__doc__)
 
@@ -119,14 +107,18 @@ if __name__ == "__main__":
     # Read the list files, to get the tests.
     tests_list = test_lists.read_lists(list_paths)
 
-    results = []
+    # We need the width of the widest key so that we can figure out
+    # how to align the key:result columns.
+    width = 0
+    for cur in tests_list:
+        if len(cur[0]) > width:
+            width = len(cur[0])
+
     error_count = 0
     for cur in tests_list:
         result = process_test(cur)
         error_count += result[0]
-        results.append([cur[0], result[1]])
+        print(f"{cur[0]:>{width}}: {result[1]}")
 
-
-    report_results(results)
     exit(error_count)
     
