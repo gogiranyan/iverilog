@@ -69,11 +69,15 @@ def log_results(fd, title, res) -> None:
     fd.write(f"\n====== Return code: {res.returncode} =====\n".encode("ascii"))
 
 
-def run_CE(it_key: str, it_dir: str, it_args: list) -> list:
+def run_CE(options : dict) -> list:
     ''' Run the compiler, and expect an error
 
     In this case, we assert that the command fails to run and reports
     an error. This is to check that invalid iput generates errors.'''
+
+    it_key = options['key']
+    it_dir = options['directory']
+    it_args = options['iverilog_args']
 
     build_runtime(it_key)
 
@@ -91,19 +95,24 @@ def run_CE(it_key: str, it_dir: str, it_args: list) -> list:
             return [0, "Passed - CE"]
 
     
-def run_normal(it_key: str, it_dir: str, it_args: list) -> list:
+def run_normal(options : dict) -> list:
     '''Run the iverilog and vvp commands.
 
     In this case, run the compiler to generate a vvp output file, and
     run the vvp command to actually execute the simulation. Collect
     the results and look for a "PASSED" string.'''
 
+    it_key = options['key']
+    it_dir = options['directory']
+    it_iverilog_args = options['iverilog_args']
+    it_gold = options['gold']
+
     build_runtime(it_key)
 
     with open(os.path.join("log", it_key + ".log"), 'wb') as log_fd:
         
         # Run the iverilog command
-        ivl_cmd = assemble_iverilog_cmd(it_key, it_dir, it_args)
+        ivl_cmd = assemble_iverilog_cmd(it_key, it_dir, it_iverilog_args)
         ivl_res = subprocess.run(ivl_cmd, capture_output=True)
 
         log_results(log_fd, "iverilog", ivl_res)
@@ -119,6 +128,17 @@ def run_normal(it_key: str, it_dir: str, it_args: list) -> list:
             return [1, "Failed - Vvp execution failed"]
 
     it_stdout = vvp_res.stdout.decode('ascii')
+
+    # If there is a gold file, the test result depends on the stdout
+    # matching the gold file.
+    if it_gold is not None:
+        with open(os.path.join("gold", it_gold), 'r') as gold_fd:
+            stdout_gold = gold_fd.read()
+
+        if it_stdout == stdout_gold:
+            return [0, "Passed"]
+        else:
+            return [1, "Failed - Gold output doesn't match stdout."]
 
     # Look for the PASSED output string in stdout.
     for line in it_stdout.splitlines():
