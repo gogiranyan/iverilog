@@ -106,6 +106,7 @@ def run_normal(options : dict) -> list:
     it_dir = options['directory']
     it_iverilog_args = options['iverilog_args']
     it_gold = options['gold']
+    it_diff = options['diff']
 
     build_runtime(it_key)
 
@@ -140,7 +141,29 @@ def run_normal(options : dict) -> list:
         else:
             return [1, "Failed - Gold output doesn't match stdout."]
 
-    # Look for the PASSED output string in stdout.
+    # If there is a diff description, then compare name files instead of
+    # the stdout and a gold file.
+    if it_diff is not None:
+        diff_name1 = it_diff[0]
+        diff_name2 = it_diff[1]
+        diff_skip = int(it_diff[2])
+
+        with open(diff_name1) as fd:
+            for idx in range(diff_skip):
+                fd.readline()
+            diff_data1 = fd.read()
+
+        with open(diff_name2) as fd:
+            for idx in range(diff_skip):
+                fd.readline()
+            diff_data2 = fd.read()
+
+        if diff_data1 == diff_data2:
+            return [0, "Passed"]
+        else:
+            return [1, f"Failed - Files {diff_name1} and {diff_name2} differ."]
+
+    # Otherwise, look for the PASSED output string in stdout.
     for line in it_stdout.splitlines():
         if line == "PASSED":
             return [0, "Passed"]

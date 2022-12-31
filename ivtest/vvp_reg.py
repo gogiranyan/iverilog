@@ -41,16 +41,17 @@ def process_test(item: list) -> str:
     #    diff=<<file1>:<file2>:<skip>
     it_modulename = None
     it_gold = None
+    it_diff = None
     if len(item) >= 4:
         extra = item[3].split('=')
         if len(extra) == 1:
             it_modulename = extra[0]
         elif extra[0] == 'gold':
             it_gold = extra[1]
+        elif extra[0] == 'diff':
+            it_diff = extra[1].split(':')
         elif extra[0] == 'unordered':
             raise Exception(f"Sorry; unordered options not implemented.")
-        elif extra[0] == 'diff':
-            raise Exception(f"Sorry: diff options not implemented.")
 
     # Wrap all of this into an options dictionary for ease of handling.
     it_options = {
@@ -59,7 +60,8 @@ def process_test(item: list) -> str:
         'iverilog_args' : it_args,
         'directory'     : it_directory,
         'modulename'    : it_modulename,
-        'gold'          : it_gold
+        'gold'          : it_gold,
+        'diff'          : it_diff
     }
 
     if it_type == "NI":
