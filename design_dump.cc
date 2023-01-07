@@ -1180,6 +1180,11 @@ void NetBlock::dump(ostream&o, unsigned ind) const
       o << setw(ind) << "" << "end" << endl;
 }
 
+void NetBreak::dump(ostream&o, unsigned ind) const
+{
+      o << setw(ind) << "" << "break;" << endl;
+}
+
 void NetCase::dump(ostream&o, unsigned ind) const
 {
       o << setw(ind) << "";
@@ -1246,6 +1251,11 @@ void NetCondit::dump(ostream&o, unsigned ind) const
 	    o << setw(ind) << "" << "else" << endl;
 	    else_->dump(o, ind+4);
       }
+}
+
+void NetContinue::dump(ostream&o, unsigned ind) const
+{
+      o << setw(ind) << "" << "continue;" << endl;
 }
 
 void NetContribution::dump(ostream&o, unsigned ind) const

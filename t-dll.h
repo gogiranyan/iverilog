@@ -113,9 +113,11 @@ struct dll_target  : public target_t, public expr_scan_t {
       bool proc_assign(const NetAssign*);
       void proc_assign_nb(const NetAssignNB*);
       bool proc_block(const NetBlock*);
+      bool proc_break(const NetBreak*);
       void proc_case(const NetCase*);
       bool proc_cassign(const NetCAssign*);
       bool proc_condit(const NetCondit*);
+      bool proc_continue(const NetContinue*);
       bool proc_contribution(const NetContribution*);
       bool proc_deassign(const NetDeassign*);
       bool proc_delay(const NetPDelay*);

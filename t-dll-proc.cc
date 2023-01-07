@@ -462,8 +462,17 @@ bool dll_target::proc_block(const NetBlock*net)
       return flag;
 }
 
+bool dll_target::proc_break(const NetBreak*net)
+{
+      assert(stmt_cur_);
+      assert(stmt_cur_->type_ == IVL_ST_NONE);
+      FILE_NAME(stmt_cur_, net);
+      stmt_cur_->type_ = IVL_ST_BREAK;
+      return true;
+}
+
 /*
- * A case statement is in turn an array of statements with gate
+ * A. case statement is in turn an array of statements with gate
  * expressions. This builds arrays of the right size and builds the
  * ivl_expr_t and ivl_statement_s arrays for the substatements.
  */
@@ -577,6 +586,15 @@ bool dll_target::proc_condit(const NetCondit*net)
 
       stmt_cur_ = save_cur_;
       return rc_flag;
+}
+
+bool dll_target::proc_continue(const NetContinue*net)
+{
+      assert(stmt_cur_);
+      assert(stmt_cur_->type_ == IVL_ST_NONE);
+      FILE_NAME(stmt_cur_, net);
+      stmt_cur_->type_ = IVL_ST_CONTINUE;
+      return true;
 }
 
 bool dll_target::proc_deassign(const NetDeassign*net)

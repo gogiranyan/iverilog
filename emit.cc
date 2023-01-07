@@ -243,6 +243,11 @@ bool NetBlock::emit_proc(struct target_t*tgt) const
       return tgt->proc_block(this);
 }
 
+bool NetBreak::emit_proc(struct target_t*tgt) const
+{
+      return tgt->proc_break(this);
+}
+
 bool NetCase::emit_proc(struct target_t*tgt) const
 {
       tgt->proc_case(this);
@@ -257,6 +262,11 @@ bool NetCAssign::emit_proc(struct target_t*tgt) const
 bool NetCondit::emit_proc(struct target_t*tgt) const
 {
       return tgt->proc_condit(this);
+}
+
+bool NetContinue::emit_proc(struct target_t*tgt) const
+{
+      return tgt->proc_continue(this);
 }
 
 bool NetContribution::emit_proc(struct target_t*tgt) const

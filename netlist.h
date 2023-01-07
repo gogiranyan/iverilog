@@ -3062,6 +3062,12 @@ class NetBlock  : public NetProc {
       NetProc*last_;
 };
 
+class NetBreak : public NetProc {
+    public:
+      virtual void dump(std::ostream&, unsigned ind) const;
+      virtual bool emit_proc(struct target_t*) const;
+};
+
 /*
  * A CASE statement in the Verilog source leads, eventually, to one of
  * these. This is different from a simple conditional because of the
@@ -3208,6 +3214,12 @@ class NetCondit  : public NetProc {
       NetExpr* expr_;
       NetProc*if_;
       NetProc*else_;
+};
+
+class NetContinue : public NetProc {
+    public:
+      virtual void dump(std::ostream&, unsigned ind) const;
+      virtual bool emit_proc(struct target_t*) const;
 };
 
 /*

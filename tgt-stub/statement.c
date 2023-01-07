@@ -404,6 +404,11 @@ void show_statement(ivl_statement_t net, unsigned ind)
 		break;
 	  }
 
+	  case IVL_ST_BREAK: {
+		fprintf(out, "%*sbreak;\n", ind, "");
+		break;
+	  }
+
 	  case IVL_ST_CASEX:
 	  case IVL_ST_CASEZ:
 	  case IVL_ST_CASER:
@@ -471,6 +476,11 @@ void show_statement(ivl_statement_t net, unsigned ind)
 
 		break;
 	  }
+	  case IVL_ST_CONTINUE: {
+		fprintf(out, "%*scontinue;\n", ind, "");
+		break;
+	  }
+
 
 	  case IVL_ST_CONTRIB:
 	    fprintf(out, "%*sCONTRIBUTION ( <+ )\n", ind, "");
